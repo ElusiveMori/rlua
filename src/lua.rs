@@ -64,8 +64,6 @@ pub struct Lua {
     _no_ref_unwind_safe: NoRefUnwindSafe,
 }
 
-unsafe impl Send for Lua {}
-
 impl Drop for Lua {
     fn drop(&mut self) {
         unsafe {
@@ -222,7 +220,7 @@ impl Lua {
     /// [`HookTriggers.every_nth_instruction`]: struct.HookTriggers.html#field.every_nth_instruction
     pub fn set_hook<F>(&self, triggers: HookTriggers, callback: F)
     where
-        F: 'static + Send + FnMut(Context, Debug) -> Result<()>,
+        F: 'static + FnMut(Context, Debug) -> Result<()>,
     {
         unsafe {
             (*extra_data(self.main_state)).hook_callback = Some(Rc::new(RefCell::new(callback)));

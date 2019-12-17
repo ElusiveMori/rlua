@@ -172,7 +172,7 @@ impl<'lua> Context<'lua> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + Fn(Context<'lua>, A) -> Result<R>,
+        F: 'static + Fn(Context<'lua>, A) -> Result<R>,
     {
         self.create_callback(Box::new(move |lua, args| {
             func(lua, A::from_lua_multi(args, lua)?)?.to_lua_multi(lua)
@@ -189,7 +189,7 @@ impl<'lua> Context<'lua> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + FnMut(Context<'lua>, A) -> Result<R>,
+        F: 'static + FnMut(Context<'lua>, A) -> Result<R>,
     {
         let func = RefCell::new(func);
         self.create_function(move |lua, args| {
@@ -219,7 +219,7 @@ impl<'lua> Context<'lua> {
     /// Create a Lua userdata object from a custom userdata type.
     pub fn create_userdata<T>(self, data: T) -> Result<AnyUserData<'lua>>
     where
-        T: 'static + Send + UserData,
+        T: 'static + UserData,
     {
         unsafe { self.make_userdata(data) }
     }
@@ -989,7 +989,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + Fn(Context<'lua>, &T, A) -> Result<R>,
+        M: 'static + Fn(Context<'lua>, &T, A) -> Result<R>,
     {
         self.methods
             .push((name.as_ref().to_vec(), Self::box_method(method)));
@@ -1000,7 +1000,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + FnMut(Context<'lua>, &mut T, A) -> Result<R>,
+        M: 'static + FnMut(Context<'lua>, &mut T, A) -> Result<R>,
     {
         self.methods
             .push((name.as_ref().to_vec(), Self::box_method_mut(method)));
@@ -1011,7 +1011,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + Fn(Context<'lua>, A) -> Result<R>,
+        F: 'static + Fn(Context<'lua>, A) -> Result<R>,
     {
         self.methods
             .push((name.as_ref().to_vec(), Self::box_function(function)));
@@ -1022,7 +1022,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + FnMut(Context<'lua>, A) -> Result<R>,
+        F: 'static + FnMut(Context<'lua>, A) -> Result<R>,
     {
         self.methods
             .push((name.as_ref().to_vec(), Self::box_function_mut(function)));
@@ -1032,7 +1032,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + Fn(Context<'lua>, &T, A) -> Result<R>,
+        M: 'static + Fn(Context<'lua>, &T, A) -> Result<R>,
     {
         self.meta_methods.push((meta, Self::box_method(method)));
     }
@@ -1041,7 +1041,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + FnMut(Context<'lua>, &mut T, A) -> Result<R>,
+        M: 'static + FnMut(Context<'lua>, &mut T, A) -> Result<R>,
     {
         self.meta_methods.push((meta, Self::box_method_mut(method)));
     }
@@ -1050,7 +1050,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + Fn(Context<'lua>, A) -> Result<R>,
+        F: 'static + Fn(Context<'lua>, A) -> Result<R>,
     {
         self.meta_methods.push((meta, Self::box_function(function)));
     }
@@ -1059,7 +1059,7 @@ impl<'lua, T: 'static + UserData> UserDataMethods<'lua, T> for StaticUserDataMet
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + FnMut(Context<'lua>, A) -> Result<R>,
+        F: 'static + FnMut(Context<'lua>, A) -> Result<R>,
     {
         self.meta_methods
             .push((meta, Self::box_function_mut(function)));
@@ -1071,7 +1071,7 @@ impl<'lua, T: 'static + UserData> StaticUserDataMethods<'lua, T> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + Fn(Context<'lua>, &T, A) -> Result<R>,
+        M: 'static + Fn(Context<'lua>, &T, A) -> Result<R>,
     {
         Box::new(move |lua, mut args| {
             if let Some(front) = args.pop_front() {
@@ -1092,7 +1092,7 @@ impl<'lua, T: 'static + UserData> StaticUserDataMethods<'lua, T> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + FnMut(Context<'lua>, &mut T, A) -> Result<R>,
+        M: 'static + FnMut(Context<'lua>, &mut T, A) -> Result<R>,
     {
         let method = RefCell::new(method);
         Box::new(move |lua, mut args| {
@@ -1117,7 +1117,7 @@ impl<'lua, T: 'static + UserData> StaticUserDataMethods<'lua, T> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + Fn(Context<'lua>, A) -> Result<R>,
+        F: 'static + Fn(Context<'lua>, A) -> Result<R>,
     {
         Box::new(move |lua, args| function(lua, A::from_lua_multi(args, lua)?)?.to_lua_multi(lua))
     }
@@ -1126,7 +1126,7 @@ impl<'lua, T: 'static + UserData> StaticUserDataMethods<'lua, T> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + FnMut(Context<'lua>, A) -> Result<R>,
+        F: 'static + FnMut(Context<'lua>, A) -> Result<R>,
     {
         let function = RefCell::new(function);
         Box::new(move |lua, args| {

@@ -111,7 +111,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + Fn(Context<'lua>, &T, A) -> Result<R>;
+        M: 'static + Fn(Context<'lua>, &T, A) -> Result<R>;
 
     /// Add a regular method which accepts a `&mut T` as the first parameter.
     ///
@@ -123,7 +123,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + FnMut(Context<'lua>, &mut T, A) -> Result<R>;
+        M: 'static + FnMut(Context<'lua>, &mut T, A) -> Result<R>;
 
     /// Add a regular method as a function which accepts generic arguments, the first argument will
     /// be a `UserData` of type T if the method is called with Lua method syntax:
@@ -139,7 +139,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + Fn(Context<'lua>, A) -> Result<R>;
+        F: 'static + Fn(Context<'lua>, A) -> Result<R>;
 
     /// Add a regular method as a mutable function which accepts generic arguments.
     ///
@@ -151,7 +151,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
         S: ?Sized + AsRef<[u8]>,
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + FnMut(Context<'lua>, A) -> Result<R>;
+        F: 'static + FnMut(Context<'lua>, A) -> Result<R>;
 
     /// Add a metamethod which accepts a `&T` as the first parameter.
     ///
@@ -165,7 +165,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + Fn(Context<'lua>, &T, A) -> Result<R>;
+        M: 'static + Fn(Context<'lua>, &T, A) -> Result<R>;
 
     /// Add a metamethod as a function which accepts a `&mut T` as the first parameter.
     ///
@@ -179,7 +179,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        M: 'static + Send + FnMut(Context<'lua>, &mut T, A) -> Result<R>;
+        M: 'static + FnMut(Context<'lua>, &mut T, A) -> Result<R>;
 
     /// Add a metamethod which accepts generic arguments.
     ///
@@ -190,7 +190,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + Fn(Context<'lua>, A) -> Result<R>;
+        F: 'static + Fn(Context<'lua>, A) -> Result<R>;
 
     /// Add a metamethod as a mutable function which accepts generic arguments.
     ///
@@ -201,7 +201,7 @@ pub trait UserDataMethods<'lua, T: UserData> {
     where
         A: FromLuaMulti<'lua>,
         R: ToLuaMulti<'lua>,
-        F: 'static + Send + FnMut(Context<'lua>, A) -> Result<R>;
+        F: 'static + FnMut(Context<'lua>, A) -> Result<R>;
 }
 
 /// Trait for custom userdata types.

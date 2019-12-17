@@ -121,7 +121,7 @@ impl<'lua> FromLua<'lua> for AnyUserData<'lua> {
     }
 }
 
-impl<'lua, T: 'static + Send + UserData> ToLua<'lua> for T {
+impl<'lua, T: 'static + UserData> ToLua<'lua> for T {
     fn to_lua(self, lua: Context<'lua>) -> Result<Value<'lua>> {
         Ok(Value::UserData(lua.create_userdata(self)?))
     }
