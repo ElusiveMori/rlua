@@ -8,7 +8,6 @@ use std::{mem, ptr, slice};
 
 use crate::error::{Error, Result};
 use crate::ffi;
-use std::rc::Rc;
 
 // Checks that Lua has enough free stack space for future stack operations.  On failure, this will
 // panic with an internal error message.
