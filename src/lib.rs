@@ -39,6 +39,7 @@
 // Deny warnings inside doc tests / examples. When this isn't present, rustdoc doesn't show *any*
 // warnings at all.
 #![doc(test(attr(deny(warnings))))]
+#![allow(clippy::all)]
 
 #[macro_use]
 mod macros;
